@@ -10,10 +10,27 @@ const app = express();
 connectDB();
 
 /* ================= MIDDLEWARE ================= */
+const allowedOrigins = [
+  "http://localhost:8081",
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://car-dealer-demo.netlify.app",
+  process.env.FRONTEND_URL, // For flexible production URL
+].filter(Boolean); // Remove undefined entries
+
 app.use(
   cors({
-    origin: "http://localhost:8081",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
