@@ -10,35 +10,27 @@ const app = express();
 connectDB();
 
 /* ================= MIDDLEWARE ================= */
-const allowedOrigins = [
-  "http://localhost:8081",
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://car-dealer-demo.netlify.app",
-  "https://car-management-demo.netlify.app", // ✅ ADD THIS
-  process.env.FRONTEND_URL, // For flexible production URL
-].filter(Boolean); // Remove undefined entries
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// ✅ SIMPLE & WORKING CORS (NO BUGS)
+app.use(cors({
+  origin: [
+    "http://localhost:8081",
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://car-dealer-demo.netlify.app",
+    "https://car-management-demo.netlify.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true
+}));
 
-// ⬇️ IMPORTANT: increase body limits (safe for uploads)
+// ✅ Preflight fix (important)
+app.options("*", cors());
+
+// ✅ Body parsers
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-const PORT = process.env.PORT || 5000;
+
 /* ================= ROUTES ================= */
 const sellRoutes = require("./src/routes/sellRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
@@ -53,9 +45,11 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/expenses", expenseRoutes);
 
 /* ================= SERVER ================= */
+const PORT = process.env.PORT || 5000;
+
 const server = app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
 
-// 🔥 MOST IMPORTANT FIX (TIMEOUT)
-server.setTimeout(5 * 60 * 1000); // 5 minutes
+// 🔥 Timeout fix
+server.setTimeout(5 * 60 * 1000);
