@@ -15,6 +15,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://car-dealer-demo.netlify.app",
+  "https://car-management-demo.netlify.app", // ✅ ADD THIS
   process.env.FRONTEND_URL, // For flexible production URL
 ].filter(Boolean); // Remove undefined entries
 
