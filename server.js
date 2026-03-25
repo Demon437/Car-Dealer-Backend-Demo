@@ -24,8 +24,6 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Preflight fix (important)
-app.options("/*", cors());
 
 // ✅ Body parsers
 app.use(express.json({ limit: "50mb" }));
