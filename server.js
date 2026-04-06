@@ -17,8 +17,8 @@ app.use(cors({
     "http://localhost:8081",
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://car-dealer-demo.netlify.app",
-    "https://car-management-demo.netlify.app"
+    "https://car-management-demo.netlify.app",
+    "https://car.webixinfotech.in"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true
